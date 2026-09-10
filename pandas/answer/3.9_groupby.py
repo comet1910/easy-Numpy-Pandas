@@ -1,20 +1,18 @@
 """
 3.9 Pandas 的数据聚合、转换、过滤函数 —— 答案
+（数据来自 data/employees.csv，与教材一致）
 """
 
-import numpy as np
+from pathlib import Path
+
 import pandas as pd
+
+DATA_DIR = Path(__file__).resolve().parents[2] / "data"
 
 
 def _employees():
-    return pd.DataFrame({
-        "employee_id": [100, 101, 102, 103, 104, 105, 106, 107],
-        "last_name": ["Whalen", "Hartstein", "Fay", "Raphaely", "Khoo", "Baida", "Tobias", "King"],
-        "job_id": ["AD_ASST", "MK_MAN", "MK_REP", "PU_MAN", "PU_CLERK", "PU_CLERK", "PU_CLERK", "PU_MAN"],
-        "salary": [4400, 13000, 6000, 11000, 2600, 2900, 2800, 11000],
-        "commission_pct": [0.1, 0.2, 0.3, np.nan, 0.4, 0.5, 0.6, np.nan],
-        "department_id": [10, 20, 20, 30, 30, 30, 30, 30],
-    })
+    """从 data/employees.csv 加载员工数据"""
+    return pd.read_csv(DATA_DIR / "employees.csv")
 
 
 def ex1():

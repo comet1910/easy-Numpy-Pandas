@@ -1,20 +1,19 @@
 """
 3.7 Pandas 的缺失值处理函数 —— 答案
+（缺失值案例数据来自 data/weather_withna.csv，与教材一致）
 """
+
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
 
+DATA_DIR = Path(__file__).resolve().parents[2] / "data"
+
 
 def _dfna():
-    return pd.DataFrame({
-        "date": ["2015-12-27", "2015-12-31"],
-        "precipitation": [np.nan, 20.6],
-        "temp_max": [np.nan, 12.2],
-        "temp_min": [np.nan, 5.0],
-        "wind": [np.nan, 3.8],
-        "weather": [np.nan, "rain"],
-    })
+    """从 data/weather_withna.csv 加载含缺失值的天气数据"""
+    return pd.read_csv(DATA_DIR / "weather_withna.csv")
 
 
 def ex1():

@@ -1,22 +1,16 @@
 """
 3.10 Pandas 透视表 —— 答案
-（教材原示例使用 sleep.csv，这里用等价的内联数据代替）
+数据源：data/sleep.csv（教材原示例即使用 sleep.csv）
 """
 
+from pathlib import Path
 import pandas as pd
+
+DATA_DIR = Path(__file__).resolve().parents[2] / "data"
 
 
 def _sleep():
-    return pd.DataFrame({
-        "person_id": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-        "gender": ["F", "M", "F", "M", "F", "M", "F", "M", "F", "M"],
-        "occupation": ["Office Worker", "Student", "Retired", "Manual Labor",
-                       "Office Worker", "Student", "Retired", "Manual Labor",
-                       "Office Worker", "Student"],
-        "sleep_duration": [5.5, 6.5, 7.5, 4.5, 8.5, 6.0, 7.0, 5.0, 9.0, 6.8],
-        "sleep_quality": [7, 8, 6, 5, 9, 7, 8, 6, 9, 7],
-        "stress_level": [2, 5, 8, 3, 1, 6, 4, 9, 2, 7],
-    })
+    return pd.read_csv(DATA_DIR / "sleep.csv")
 
 
 def ex1():

@@ -17,20 +17,28 @@
     5. 中文字体需设置 rcParams["font.sans-serif"]，并设 rcParams["axes.unicode_minus"]=False
 
 说明：
-    下面的 _data() 与 _year_color() 已给出，你只需要把每个练习函数中的 pass
-    替换成自己的实现，函数返回题目要求的结果（这些返回值便于自测校验；
-    如果想看图，可在 __main__ 中调用 plt.show()）。
+    下面的 _weather()/_data()/_year_color() 已给出，其中 _data() 返回 data/weather.csv
+    的降水量列（教材原示例数据）。你只需要把每个练习函数中的 pass 替换成自己的实现，
+    函数返回题目要求的结果（这些返回值便于自测校验；如果想看图，可在 __main__ 中
+    调用 plt.show()）。
 """
 
+from pathlib import Path
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
+DATA_DIR = Path(__file__).resolve().parents[2] / "data"
+
+
+def _weather():
+    """从 data/weather.csv 加载逐日天气数据"""
+    return pd.read_csv(DATA_DIR / "weather.csv")
+
 
 def _data():
-    """内联数据：一组用于画直方图的一维数据"""
-    return [1.2, 2.3, 2.8, 3.1, 3.3, 3.7, 4.0, 4.2, 4.5, 5.1,
-            5.4, 5.9, 6.2, 6.6, 7.0, 7.3, 7.8, 8.1, 8.6, 9.2]
+    """画直方图用的一维数据：weather.csv 的降水量 precipitation 列"""
+    return _weather()["precipitation"]
 
 
 def _year_color(x):
@@ -74,7 +82,7 @@ def ex3():
     练习3：直方图 hist
     fig, ax = plt.subplots()，n, bins, patches = ax.hist(_data(), bins=5)
     返回元组 (分组的组数, 每组频次列表, 柱形对象个数)
-    预期：(5, [2.0, 6.0, 4.0, 4.0, 4.0], 5)
+    预期：(5, [1329.0, 93.0, 28.0, 6.0, 5.0], 5)
     """
     pass
 
@@ -84,7 +92,7 @@ def ex4():
     练习4：直方图的频次之和与分组边界个数
     fig, ax = plt.subplots()，n, bins, _ = ax.hist(_data(), bins=5)
     返回元组 (频次之和, 分组边界个数)
-    预期：(20, 6)
+    预期：(1461, 6)（等于 weather.csv 的行数）
     """
     pass
 
@@ -104,12 +112,11 @@ def ex5():
 def ex6():
     """
     练习6：多变量散点图——按年份着色
-    构造 DataFrame（date 为 6 个跨年日期：2012-01-01、2012-06-01、2013-01-01、
-    2013-06-01、2014-01-01、2015-01-01；temp_max 与 precipitation 自定）
-    用 df["date"].apply(_year_color) 生成 color 列，
+    读取 weather.csv，用 df["date"].apply(_year_color) 生成 color 列，
     再用 ax.scatter(df["temp_max"], df["precipitation"], c=df["color"], alpha=0.5) 绘制
-    返回元组 (color 列取值列表, collections 个数)
-    预期：(["r", "r", "g", "g", "b", "k"], 1)
+    返回元组 (color 取值计数字典, collections 个数)
+    提示：统计各颜色数量用 df["color"].value_counts().to_dict()
+    预期：({'r': 366, 'g': 365, 'b': 365, 'k': 365}, 1)
     """
     pass
 

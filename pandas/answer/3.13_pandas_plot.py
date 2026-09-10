@@ -1,23 +1,22 @@
 """
 3.13 Pandas 可视化 —— 答案
+数据源：data/sleep.csv（教材原示例即使用 sleep.csv）
 
 说明：下面每个练习都用 fig, ax = plt.subplots() 新建一块画布，并把 ax 传给
 pandas 的 plot 方法（ax=ax），这样各题互不影响，图形也是独立的。
 """
 
+from pathlib import Path
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
+DATA_DIR = Path(__file__).resolve().parents[2] / "data"
+
 
 def _sleep():
-    """内联数据（等价于教材 sleep.csv 的简化版，12 行）"""
-    return pd.DataFrame({
-        "person_id": list(range(1, 13)),
-        "gender": ["F", "M", "F", "M", "F", "M", "F", "M", "F", "M", "F", "M"],
-        "sleep_duration": [5.5, 6.5, 7.5, 4.5, 8.5, 6.0, 7.0, 5.0, 9.0, 6.8, 7.2, 5.8],
-        "sleep_quality": [7, 8, 6, 5, 9, 7, 8, 6, 9, 7, 8, 5],
-    })
+    """从 data/sleep.csv 加载睡眠数据（400 行）"""
+    return pd.read_csv(DATA_DIR / "sleep.csv")
 
 
 def _duration_stage(df):
@@ -44,7 +43,7 @@ def ex2():
     counts = _duration_stage(df).value_counts().sort_index()
     fig, ax = plt.subplots(); counts.plot(ax=ax)
     返回元组 (排序后的频次列表, 折线条数)
-    预期：([2, 3, 3, 2, 2, 0, 0, 0], 1)
+    预期：([61, 47, 43, 43, 47, 53, 61, 45], 1)
     """
     counts = _duration_stage(_sleep()).value_counts().sort_index()
     fig, ax = plt.subplots()
@@ -97,7 +96,7 @@ def ex6():
     fig, ax = plt.subplots()
     df.plot.scatter(x="sleep_duration", y="sleep_quality", ax=ax)
     返回散点个数
-    预期：12
+    预期：400
     """
     fig, ax = plt.subplots()
     _sleep().plot.scatter(x="sleep_duration", y="sleep_quality", ax=ax)
@@ -131,7 +130,7 @@ def ex8():
     练习8：堆叠柱状图 plot.bar(stacked=True)
     pt = _pt(); fig, ax = plt.subplots(); pt.plot.bar(stacked=True, ax=ax)
     返回元组 (pt 的二维计数之和，空值不计, 柱形 patches 个数)
-    预期：(12, 80)
+    预期：(400, 80)
     """
     pt = _pt()
     fig, ax = plt.subplots()

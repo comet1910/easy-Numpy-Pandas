@@ -1,18 +1,17 @@
 """
 3.11 Pandas 时间序列 —— 答案
+数据源：data/weather.csv（教材原示例即使用 weather.csv）
 """
 
+from pathlib import Path
 import pandas as pd
+
+DATA_DIR = Path(__file__).resolve().parents[2] / "data"
 
 
 def _daily():
-    """内联数据：2015 年 12 个月的月度天气数据（等价于教材 weather.csv 的简化版）"""
-    return pd.DataFrame({
-        "date": pd.date_range("2015-01-01", periods=12, freq="MS"),
-        "precipitation": [0.0, 1.0, 2.0, 0.5, 3.0, 0.0, 1.5, 2.5, 0.0, 4.0, 1.0, 0.5],
-        "temp_max": [5.0, 6.0, 8.0, 10.0, 12.0, 15.0, 18.0, 20.0, 17.0, 14.0, 10.0, 7.0],
-        "temp_min": [-2.0, -1.0, 1.0, 3.0, 5.0, 8.0, 11.0, 13.0, 10.0, 7.0, 3.0, 1.0],
-    })
+    """从 data/weather.csv 加载逐日天气数据（2012-01-01 ~ 2015-12-31）"""
+    return pd.read_csv(DATA_DIR / "weather.csv")
 
 
 def ex1():
@@ -111,7 +110,7 @@ def ex9():
     练习9：将日期列设为 DatetimeIndex 后按时间切片
     df = _daily()，把 date 列转为 datetime 并 set_index("date")
     取 df.loc["2015-03":"2015-05"]，返回其行数
-    预期：3
+    预期：92（2015 年 3、4、5 月共 92 天）
     """
     df = _daily()
     df["date"] = pd.to_datetime(df["date"])
@@ -122,22 +121,26 @@ def ex9():
 def ex10():
     """
     练习10：resample 重新采样——按季度求平均温度
-    df = _daily().set_index("date")
+    df = _daily()，把 date 列转为 datetime 后 set_index("date")
     df[["temp_max", "temp_min"]].resample("Q").mean()，每个值保留 2 位小数
     返回二维列表（外层为季度，内层为 [temp_max, temp_min]）
-    预期：[[6.33, -0.67], [12.33, 5.33], [18.33, 11.33], [10.33, 3.67]]
+    预期：16 个季度，2012Q1 起
     """
-    df = _daily().set_index("date")
+    df = _daily()
+    df["date"] = pd.to_datetime(df["date"])
+    df = df.set_index("date")
     return df[["temp_max", "temp_min"]].resample("Q").mean().round(2).values.tolist()
 
 
 def ex11():
     """
     练习11：resample 按年汇总——全年降水量之和
-    df = _daily().set_index("date")
+    df = _daily()，把 date 列转为 datetime 后 set_index("date")
     df["precipitation"].resample("A").sum()
     返回列表
-    预期：[16.0]
+    预期：[1226.0, 828.0, 1232.8, 1139.2]（2012~2015 各年）
     """
-    df = _daily().set_index("date")
+    df = _daily()
+    df["date"] = pd.to_datetime(df["date"])
+    df = df.set_index("date")
     return df["precipitation"].resample("A").sum().round(2).tolist()

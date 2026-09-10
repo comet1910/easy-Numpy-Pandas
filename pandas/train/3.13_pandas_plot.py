@@ -22,29 +22,28 @@
          len(ax.collections) 散点/多边形集合数
 
 说明：
-    下面的 _sleep() 已给出内联数据（等价于教材 sleep.csv 的简化版，12 行）。
+    下面的 _sleep() 从 data/sleep.csv 加载睡眠数据（400 行，教材原示例数据）。
     你只需要把每个练习函数中的 pass 替换成自己的实现，函数返回题目要求的结果
     （这些返回值便于自测校验；如果想看图，可在 __main__ 中调用 plt.show()）。
 """
 
+from pathlib import Path
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
+DATA_DIR = Path(__file__).resolve().parents[2] / "data"
+
 
 def _sleep():
-    """内联数据（等价于教材 sleep.csv 的简化版，12 行）"""
-    return pd.DataFrame({
-        "person_id": list(range(1, 13)),
-        "gender": ["F", "M", "F", "M", "F", "M", "F", "M", "F", "M", "F", "M"],
-        "sleep_duration": [5.5, 6.5, 7.5, 4.5, 8.5, 6.0, 7.0, 5.0, 9.0, 6.8, 7.2, 5.8],
-        "sleep_quality": [7, 8, 6, 5, 9, 7, 8, 6, 9, 7, 8, 5],
-    })
+    """从 data/sleep.csv 加载睡眠数据（400 行）"""
+    return pd.read_csv(DATA_DIR / "sleep.csv")
 
 
 def ex1():
     """
     练习1：柱状图 plot.bar()
+    df = _sleep()
     counts = pd.cut(df["sleep_duration"], [0, 5, 6, 7, 8, 9, 10, 11, 12]).value_counts()
     fig, ax = plt.subplots(); counts.plot.bar(ax=ax)
     返回柱形（patches）个数
@@ -59,7 +58,7 @@ def ex2():
     counts = pd.cut(df["sleep_duration"], [0, 5, 6, 7, 8, 9, 10, 11, 12]).value_counts().sort_index()
     fig, ax = plt.subplots(); counts.plot(ax=ax)
     返回元组 (排序后的频次列表, 折线条数)
-    预期：([2, 3, 3, 2, 2, 0, 0, 0], 1)
+    预期：([61, 47, 43, 43, 47, 53, 61, 45], 1)
     """
     pass
 
@@ -101,7 +100,7 @@ def ex6():
     fig, ax = plt.subplots()
     df.plot.scatter(x="sleep_duration", y="sleep_quality", ax=ax)
     返回散点个数（提示：ax.collections[0].get_offsets().shape[0]）
-    预期：12
+    预期：400
     """
     pass
 
@@ -134,7 +133,7 @@ def ex8():
     先实现 _pt() 得到交叉表，再 fig, ax = plt.subplots(); pt.plot.bar(stacked=True, ax=ax)
     返回元组 (pt 的二维计数之和，空值不计, 柱形 patches 个数)
     提示：计数之和用 int(np.nansum(pt.values))
-    预期：(12, 80)
+    预期：(400, 80)
     """
     pass
 

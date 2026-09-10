@@ -1,16 +1,24 @@
 """
 3.12 Matplotlib 可视化 —— 答案
+数据源：data/weather.csv（教材原示例即使用 weather.csv）
 """
 
+from pathlib import Path
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
+DATA_DIR = Path(__file__).resolve().parents[2] / "data"
+
+
+def _weather():
+    """从 data/weather.csv 加载逐日天气数据"""
+    return pd.read_csv(DATA_DIR / "weather.csv")
+
 
 def _data():
-    """内联数据：一组用于画直方图/散点图的一维数据"""
-    return [1.2, 2.3, 2.8, 3.1, 3.3, 3.7, 4.0, 4.2, 4.5, 5.1,
-            5.4, 5.9, 6.2, 6.6, 7.0, 7.3, 7.8, 8.1, 8.6, 9.2]
+    """画直方图用的一维数据：weather.csv 的降水量 precipitation 列"""
+    return _weather()["precipitation"]
 
 
 def _year_color(x):
@@ -67,7 +75,7 @@ def ex3():
     练习3：直方图 hist
     fig, ax = plt.subplots()，ax.hist(_data(), bins=5)
     返回元组 (分组的组数, 每组频次列表, 柱形对象个数)
-    预期：(5, [...], 5)  —— 频次列表由实际数据决定
+    预期：(5, [1329.0, 93.0, 28.0, 6.0, 5.0], 5)
     """
     fig, ax = plt.subplots()
     n, bins, patches = ax.hist(_data(), bins=5)
@@ -79,7 +87,7 @@ def ex4():
     练习4：直方图的频次之和与分组边界个数
     fig, ax = plt.subplots()，n, bins, _ = ax.hist(_data(), bins=5)
     返回元组 (频次之和, 边界个数)
-    预期：(20, 6)
+    预期：(1461, 6)（等于 weather.csv 的行数）
     """
     fig, ax = plt.subplots()
     n, bins, _ = ax.hist(_data(), bins=5)
@@ -106,21 +114,17 @@ def ex5():
 def ex6():
     """
     练习6：多变量散点图——按年份着色
-    构造 DataFrame（date 为 6 个跨年日期），用 df["date"].apply(_year_color)
-    生成 color 列，再用 ax.scatter(..., c=df["color"], alpha=0.5) 绘制
-    返回元组 (color 列取值列表, collections 个数)
-    预期：(["r", "r", "g", "g", "b", "k"], 1)
+    读取 weather.csv，用 df["date"].apply(_year_color) 生成 color 列，
+    再用 ax.scatter(df["temp_max"], df["precipitation"], c=df["color"], alpha=0.5) 绘制
+    返回元组 (color 取值计数字典, collections 个数)
+    预期：({'r': 366, 'g': 365, 'b': 365, 'k': 365}, 1)
     """
-    df = pd.DataFrame({
-        "date": pd.to_datetime(["2012-01-01", "2012-06-01", "2013-01-01",
-                                "2013-06-01", "2014-01-01", "2015-01-01"]),
-        "temp_max": [5.0, 20.0, 6.0, 22.0, 7.0, 8.0],
-        "precipitation": [0.0, 1.0, 0.5, 2.0, 0.0, 3.0],
-    })
+    df = _weather()
+    df["date"] = pd.to_datetime(df["date"])
     df["color"] = df["date"].apply(_year_color)
     fig, ax = plt.subplots()
     ax.scatter(df["temp_max"], df["precipitation"], c=df["color"], alpha=0.5)
-    return df["color"].tolist(), len(ax.collections)
+    return df["color"].value_counts().to_dict(), len(ax.collections)
 
 
 def ex7():

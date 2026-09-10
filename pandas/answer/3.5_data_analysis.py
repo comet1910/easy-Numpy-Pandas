@@ -1,33 +1,26 @@
 """
 3.5 DataFrame 数据分析入门 —— 答案
-（教材原示例使用 weather.csv / employees.csv，这里用等价的内联数据代替）
+（数据来自 data/ 目录下的 weather.csv / employees.csv，与教材一致）
 """
+
+from pathlib import Path
 
 import pandas as pd
 
+DATA_DIR = Path(__file__).resolve().parents[2] / "data"
+
 
 def _weather():
-    df = pd.DataFrame({
-        "date": ["2012-01-15", "2012-01-20", "2012-02-10", "2012-02-25",
-                 "2013-01-05", "2013-01-18", "2013-02-12", "2013-02-28"],
-        "precipitation": [0.0, 2.5, 1.0, 0.0, 5.0, 0.0, 3.0, 1.5],
-        "temp_max": [7.0, 9.0, 10.0, 12.0, 6.0, 8.0, 11.0, 13.0],
-        "temp_min": [1.0, 3.0, 4.0, 5.0, 0.0, 2.0, 5.0, 6.0],
-        "wind": [2.0, 3.0, 1.5, 2.5, 4.0, 2.0, 3.5, 1.0],
-        "weather": ["sun", "rain", "rain", "sun", "rain", "sun", "rain", "sun"],
-    })
+    """从 data/weather.csv 加载天气数据，并派生 month、year 两列"""
+    df = pd.read_csv(DATA_DIR / "weather.csv")
     df["month"] = pd.to_datetime(df["date"]).dt.to_period("M").astype(str)
     df["year"] = pd.to_datetime(df["date"]).dt.to_period("Y").astype(str)
     return df
 
 
 def _employees():
-    return pd.DataFrame({
-        "employee_id": [1, 2, 3, 4, 5, 6],
-        "first_name": ["A", "B", "C", "D", "E", "F"],
-        "salary": [5000, 8000, 3000, 12000, 6000, 4000],
-        "department_id": [10, 20, 10, 30, 20, 30],
-    })
+    """从 data/employees.csv 加载员工数据"""
+    return pd.read_csv(DATA_DIR / "employees.csv")
 
 
 def ex1():

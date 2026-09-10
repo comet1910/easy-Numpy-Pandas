@@ -14,23 +14,24 @@
        - interpolate() 线性插值（method="linear"/"time"/"polynomial"）
 
 说明：
-    下面的 _dfna() 已给出含缺失值的内联数据，你只需要把每个练习函数中的
-    pass 替换成自己的实现，函数返回题目要求的结果。
+    下面的 _dfna() 从 data/weather_withna.csv 加载含缺失值的天气数据
+    （与教材一致）。你只需要把每个练习函数中的 pass 替换成自己的实现，
+    函数返回题目要求的结果。
+    注意：真实数据量较大（1461 行），涉及整列处理的题目在"预期"中只列出
+    末尾若干项作为参考，实际返回完整结果。
 """
+
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
 
+DATA_DIR = Path(__file__).resolve().parents[2] / "data"
+
 
 def _dfna():
-    return pd.DataFrame({
-        "date": ["2015-12-27", "2015-12-31"],
-        "precipitation": [np.nan, 20.6],
-        "temp_max": [np.nan, 12.2],
-        "temp_min": [np.nan, 5.0],
-        "wind": [np.nan, 3.8],
-        "weather": [np.nan, "rain"],
-    })
+    """从 data/weather_withna.csv 加载含缺失值的天气数据"""
+    return pd.read_csv(DATA_DIR / "weather_withna.csv")
 
 
 def ex1():
@@ -101,7 +102,7 @@ def ex8():
     """
     练习8：使用固定值填充
     基于 _dfna()，返回 fillna(0) 后的 temp_max 列取值列表
-    预期：[0.0, 12.2]
+    预期：共 1461 项，末尾 5 项为 [0.0, 0.0, 0.0, 0.0, 12.2]
     """
     pass
 
@@ -111,7 +112,8 @@ def ex9():
     练习9：使用字典填充
     基于 _dfna()，fillna({"temp_max": 60, "temp_min": -60})
     返回 [["temp_max", "temp_min"]] 的值（二维列表）
-    预期：[[60.0, -60.0], [12.2, 5.0]]
+    预期：共 1461 行，末尾 5 行为
+          [[60.0, -60.0], [60.0, -60.0], [60.0, -60.0], [60.0, -60.0], [12.2, 5.0]]
     """
     pass
 
@@ -120,7 +122,8 @@ def ex10():
     """
     练习10：使用均值填充
     基于 _dfna()，用 df[["temp_max"]].mean() 填充，返回 temp_max 列取值列表
-    预期：[12.2, 12.2]
+    预期：均值约为 15.85146804835924（该列原有 1158 个非空值），
+          填充后共 1461 项，末尾 5 项为 [15.85..., 15.85..., 15.85..., 15.85..., 12.2]
     """
     pass
 
