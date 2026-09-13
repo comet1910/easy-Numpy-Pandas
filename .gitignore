@@ -1,2 +1,4 @@
 docs/
 .venv
+numpy_hand/
+pandas_hand/
